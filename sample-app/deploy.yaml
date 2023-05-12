@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Service
+metadata:
+  name: car-app-svc
+  namespace: default
+spec:
+  selector:
+    app: car
+  type: ClusterIP
+  ports:
+  - name: car-app
+    protocol: TCP
+    port: 80
+    targetPort: 80
+    # If you set the 'spec.type' field to 'NodePort' and you want a specific port number,
+    # you can specify a value in the 'spec.ports[*].NodePort' field.
+    #nodePort:
+
+      
+---
+
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: car-app-deploy
+  namespace: default
+  labels:
+    app: car
+spec:
+  selector:
+    matchLabels:
+      app: car
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: car
+    spec:
+      containers:
+        - name: sample-car-app
+          image: docker.io/arreyorock30/car-app:latest
+          ports:
+            - containerPort: 80
+              name: car-app
+      restartPolicy: Always
